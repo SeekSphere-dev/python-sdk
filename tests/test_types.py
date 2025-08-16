@@ -1,17 +1,19 @@
 """Tests for SeekSphere types."""
 
-import pytest
 from typing import get_type_hints
+
+import pytest
+
 from seeksphere.types import (
+    APIResponse,
+    SchemaResponse,
+    SDKConfig,
     SearchMode,
     SearchRequest,
     SearchResponse,
-    UpdateTokensRequest,
-    UpdateSchemaRequest,
-    APIResponse,
     TokensResponse,
-    SchemaResponse,
-    SDKConfig,
+    UpdateSchemaRequest,
+    UpdateTokensRequest,
 )
 
 
@@ -38,7 +40,7 @@ class TestTypes:
             "success": True,
             "org_id": "test-org",
             "mode": "sql_only",
-            "user_id": "test-user"
+            "user_id": "test-user",
         }
         assert response["success"] is True
         assert response["org_id"] == "test-org"
@@ -48,10 +50,7 @@ class TestTypes:
     def test_update_tokens_request_structure(self):
         """Test UpdateTokensRequest TypedDict structure."""
         request: UpdateTokensRequest = {
-            "tokens": {
-                "category1": ["token1", "token2"],
-                "category2": ["token3"]
-            }
+            "tokens": {"category1": ["token1", "token2"], "category2": ["token3"]}
         }
         assert "tokens" in request
         assert isinstance(request["tokens"], dict)
@@ -63,10 +62,7 @@ class TestTypes:
         request: UpdateSchemaRequest = {
             "search_schema": {
                 "tables": {
-                    "users": {
-                        "columns": ["id", "name"],
-                        "types": ["int", "varchar"]
-                    }
+                    "users": {"columns": ["id", "name"], "types": ["int", "varchar"]}
                 }
             }
         }
@@ -79,11 +75,11 @@ class TestTypes:
             "success": True,
             "message": "Operation successful",
             "error": "",
-            "org_id": "test-org"
+            "org_id": "test-org",
         }
         assert response["success"] is True
         assert response["message"] == "Operation successful"
-        
+
         # Test with minimal fields (total=False allows partial)
         minimal_response: APIResponse = {"success": False}
         assert minimal_response["success"] is False
@@ -91,10 +87,8 @@ class TestTypes:
     def test_tokens_response_structure(self):
         """Test TokensResponse TypedDict structure."""
         response: TokensResponse = {
-            "tokens": {
-                "category1": ["token1", "token2"]
-            },
-            "org_id": "test-org"
+            "tokens": {"category1": ["token1", "token2"]},
+            "org_id": "test-org",
         }
         assert "tokens" in response
         assert "org_id" in response
@@ -104,7 +98,7 @@ class TestTypes:
         """Test SchemaResponse TypedDict structure."""
         response: SchemaResponse = {
             "search_schema": {"tables": {}},
-            "org_id": "test-org"
+            "org_id": "test-org",
         }
         assert "search_schema" in response
         assert "org_id" in response
@@ -115,15 +109,15 @@ class TestTypes:
         config: SDKConfig = {
             "base_url": "https://api.test.com",
             "api_key": "test-key",
-            "timeout": 30
+            "timeout": 30,
         }
         assert config["base_url"] == "https://api.test.com"
         assert config["api_key"] == "test-key"
         assert config["timeout"] == 30
-        
+
         # Test with minimal fields (total=False allows partial)
         minimal_config: SDKConfig = {
             "base_url": "https://api.test.com",
-            "api_key": "test-key"
+            "api_key": "test-key",
         }
         assert "timeout" not in minimal_config or minimal_config.get("timeout") is None

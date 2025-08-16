@@ -1,7 +1,13 @@
 """Tests for SeekSphere exceptions."""
 
 import pytest
-from seeksphere.exceptions import SeekSphereError, APIError, NetworkError, ValidationError
+
+from seeksphere.exceptions import (
+    APIError,
+    NetworkError,
+    SeekSphereError,
+    ValidationError,
+)
 
 
 class TestExceptions:
@@ -53,11 +59,11 @@ class TestExceptions:
         api_error = APIError("test")
         network_error = NetworkError("test")
         validation_error = ValidationError("test")
-        
+
         assert isinstance(api_error, SeekSphereError)
         assert isinstance(network_error, SeekSphereError)
         assert isinstance(validation_error, SeekSphereError)
-        
+
         assert isinstance(api_error, Exception)
         assert isinstance(network_error, Exception)
         assert isinstance(validation_error, Exception)
