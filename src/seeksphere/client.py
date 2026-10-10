@@ -178,8 +178,13 @@ class SeekSphereClient:
                 raise ValidationError("All token keys must be strings")
             if not isinstance(value, list):
                 raise ValidationError("All token values must be lists")
-            if not all(isinstance(item, (str, int, float)) and not isinstance(item, bool) for item in value):
-                raise ValidationError("All token values must be lists of strings or numbers")
+            if not all(
+                isinstance(item, (str, int, float)) and not isinstance(item, bool)
+                for item in value
+            ):
+                raise ValidationError(
+                    "All token values must be lists of strings or numbers"
+                )
 
         return self._make_request("PUT", "/org/tokens", data=request)
 

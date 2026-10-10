@@ -1,6 +1,6 @@
 """Type definitions for SeekSphere SDK."""
 
-from typing import Any, Dict, List, Literal, Optional, Union, TypedDict
+from typing import Any, Dict, List, Literal, Optional, TypedDict, Union
 
 # Type aliases
 SearchMode = Literal["sql_only", "full"]
