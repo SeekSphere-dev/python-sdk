@@ -239,8 +239,7 @@ class TestIntegration:
 
         # Check headers
         assert session.headers["Content-Type"] == "application/json"
-        assert session.headers["X-Org-Id"] == "test-org-id"
-        assert session.headers["X-User-Id"] == "node_sdk"
+        assert session.headers["X-Api-Key"] == "test-org-id"
 
         # Check adapters are mounted
         assert "http://" in session.adapters

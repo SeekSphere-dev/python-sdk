@@ -110,11 +110,23 @@ class TestEdgeCases:
         with pytest.raises(ValidationError, match="All token values must be lists"):
             client.update_tokens({"tokens": {"category": "not_a_list"}})
 
-        # Tokens with non-string list items
+        # Numeric token values are allowed (the API accepts str, int or float)
+        try:
+            with patch("requests.Session.request") as mock_request:
+                mock_resp = Mock()
+                mock_resp.ok = True
+                mock_resp.json.return_value = {"success": True}
+                mock_request.return_value = mock_resp
+
+                client.update_tokens({"tokens": {"category": ["token1", 123, "token2"]}})
+        except ValidationError:
+            pytest.fail("Should not raise ValidationError for numeric token values")
+
+        # Tokens with unsupported list item types
         with pytest.raises(
-            ValidationError, match="All token values must be lists of strings"
+            ValidationError, match="All token values must be lists of strings or numbers"
         ):
-            client.update_tokens({"tokens": {"category": ["token1", 123, "token2"]}})
+            client.update_tokens({"tokens": {"category": ["token1", {"nested": True}]}})
 
         # Very large token structure
         large_tokens = {

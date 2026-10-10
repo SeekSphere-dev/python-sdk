@@ -6,16 +6,20 @@ from .types import (
     SearchMode,
     SearchRequest,
     SearchResponse,
+    SearchSource,
+    TokenMap,
     UpdateSchemaRequest,
     UpdateTokensRequest,
 )
 
-__version__ = "1.0.0"
+__version__ = "2.0.0"
 __all__ = [
     "SeekSphereClient",
     "SearchMode",
     "SearchRequest",
     "SearchResponse",
+    "SearchSource",
+    "TokenMap",
     "UpdateTokensRequest",
     "UpdateSchemaRequest",
     "SeekSphereError",

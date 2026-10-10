@@ -1,9 +1,12 @@
 """Type definitions for SeekSphere SDK."""
 
-from typing import Any, Dict, List, Literal, Optional, TypedDict
+from typing import Any, Dict, List, Literal, Optional, Union, TypedDict
 
 # Type aliases
 SearchMode = Literal["sql_only", "full"]
+SearchSource = Literal["cache", "pattern", "llm"]
+TokenValue = Union[str, int, float]
+TokenMap = Dict[str, List[TokenValue]]
 
 
 class SearchRequest(TypedDict):
@@ -12,20 +15,29 @@ class SearchRequest(TypedDict):
     query: str
 
 
-class SearchResponse(TypedDict):
+class SearchResponse(TypedDict, total=False):
     """Response from search endpoint."""
 
     success: bool
     org_id: str
-    mode: str
-    user_id: str
+    mode: SearchMode
+    user_id: Optional[str]
+    query: str
+    sql: str
+    source: SearchSource
+    processing_time_ms: float
+    pattern_used: Optional[Dict[str, Any]]
+    extracted_values: Optional[Dict[str, Any]]
+    learned: Optional[bool]
+    pattern_learning_enabled: Optional[bool]
+    cached: Optional[bool]
     # Additional fields may be present
 
 
 class UpdateTokensRequest(TypedDict):
     """Request payload for updating tokens."""
 
-    tokens: Dict[str, List[str]]
+    tokens: TokenMap
 
 
 class UpdateSchemaRequest(TypedDict):
@@ -46,7 +58,7 @@ class APIResponse(TypedDict, total=False):
 class TokensResponse(TypedDict):
     """Response from get tokens endpoint."""
 
-    tokens: Dict[str, List[str]]
+    tokens: TokenMap
     org_id: str
 
 
@@ -61,5 +73,5 @@ class SDKConfig(TypedDict, total=False):
     """Configuration for SeekSphere SDK."""
 
     base_url: str
-    api_key: str  # This is the org_id
+    api_key: str  # Per-org API key created via POST /org/api-keys, sent as X-Api-Key
     timeout: Optional[int]

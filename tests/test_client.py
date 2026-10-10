@@ -41,8 +41,7 @@ class TestSeekSphereClient:
         assert client.base_url == "https://api.test.com"
         assert client.api_key == "test-org-id"
         assert client.timeout == 60
-        assert client.session.headers["X-Org-Id"] == "test-org-id"
-        assert client.session.headers["X-User-Id"] == "node_sdk"
+        assert client.session.headers["X-Api-Key"] == "test-org-id"
 
     def test_client_initialization_strips_trailing_slash(self):
         """Test that trailing slash is stripped from base_url."""

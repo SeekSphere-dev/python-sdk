@@ -41,7 +41,7 @@ from seeksphere import SeekSphereClient
 # Initialize the client
 client = SeekSphereClient({
     "base_url": "https://your-api-domain.com",
-    "api_key": "your-org-id",  # org_id is used as the API key
+    "api_key": "your-api-key",  # created via POST /org/api-keys (requires a signed-in session)
     "timeout": 30  # optional, defaults to 30 seconds
 })
 
@@ -160,9 +160,13 @@ print(health["status"])  # Should be "healthy"
 ## Configuration
 
 The SDK automatically sets the following headers:
-- `X-Org-Id`: Your provided `api_key` (org_id)
-- `X-User-Id`: `"node_sdk"`
+- `X-Api-Key`: Your provided `api_key`
 - `Content-Type`: `"application/json"`
+
+`update_tokens` and `update_schema` require a signed-in user session (Clerk), not
+an API key, and return `403 forbidden` when called with one; use the SeekSphere
+dashboard for those instead. `search`, `get_tokens`, and `get_schema` work with
+an API key.
 
 ## Error Handling
 
@@ -197,7 +201,7 @@ except NetworkError as e:
 ```python
 client = SeekSphereClient({
     "base_url": "https://api.seeksphere.com",
-    "api_key": "your-org-id",
+    "api_key": "your-api-key",
     "timeout": 60  # 60 seconds timeout
 })
 ```

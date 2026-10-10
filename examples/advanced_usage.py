@@ -208,7 +208,7 @@ def demonstrate_advanced_features():
     manager = SeekSphereManager(
         {
             "base_url": "http://localhost:3004",
-            "api_key": "your-org-id-here",
+            "api_key": "your-api-key-here",  # Create one with POST /org/api-keys
             "timeout": 30,
         }
     )

@@ -11,7 +11,7 @@ def main():
     client = SeekSphereClient(
         {
             "base_url": "http://localhost:3004",  # Replace with your API URL
-            "api_key": "your-org-id-here",  # Replace with your actual org_id
+            "api_key": "your-api-key-here",  # Create one with POST /org/api-keys
             "timeout": 30,
         }
     )

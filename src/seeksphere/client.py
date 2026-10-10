@@ -28,10 +28,12 @@ class SeekSphereClient:
         """Initialize the SeekSphere client.
 
         Args:
-            config: Configuration dictionary containing base_url, api_key, and optional timeout
+            config: Configuration dictionary containing base_url, api_key, and optional timeout.
+                api_key must be a per-org API key created via `POST /org/api-keys`
+                (requires a signed-in session); it is sent as `X-Api-Key`.
         """
         self.base_url = config["base_url"].rstrip("/")
-        self.api_key = config["api_key"]  # org_id is used as api_key
+        self.api_key = config["api_key"]
         self.timeout = config.get("timeout", 30)
 
         # Create session with retry strategy
@@ -49,8 +51,7 @@ class SeekSphereClient:
         self.session.headers.update(
             {
                 "Content-Type": "application/json",
-                "X-Org-Id": self.api_key,
-                "X-User-Id": "node_sdk",  # Fixed user_id for SDK
+                "X-Api-Key": self.api_key,
             }
         )
 
@@ -105,6 +106,7 @@ class SeekSphereClient:
                     message=f"API Error: {error_message}",
                     status_code=response.status_code,
                     response_data=error_data,
+                    code=error_data.get("code"),
                 )
 
             # Parse response
@@ -129,7 +131,9 @@ class SeekSphereClient:
 
         Args:
             request: Search request containing query
-            mode: Search mode, either 'sql_only' or 'full'
+            mode: Search mode, either 'sql_only' or 'full'. 'full' is deprecated and
+                behaves identically to 'sql_only'; the API responds with a
+                `Deprecation` header when it is used.
 
         Returns:
             Search response
@@ -149,7 +153,10 @@ class SeekSphereClient:
         return self._make_request("POST", "/search", data=request, headers=headers)
 
     def update_tokens(self, request: UpdateTokensRequest) -> APIResponse:
-        """Update tokens mapping.
+        """Replace the org's token map.
+
+        Note: this endpoint requires a signed-in user session; it is not available
+        to API-key callers and returns a 403 (`forbidden`) when called with one.
 
         Args:
             request: Update tokens request
@@ -171,13 +178,16 @@ class SeekSphereClient:
                 raise ValidationError("All token keys must be strings")
             if not isinstance(value, list):
                 raise ValidationError("All token values must be lists")
-            if not all(isinstance(item, str) for item in value):
-                raise ValidationError("All token values must be lists of strings")
+            if not all(isinstance(item, (str, int, float)) and not isinstance(item, bool) for item in value):
+                raise ValidationError("All token values must be lists of strings or numbers")
 
         return self._make_request("PUT", "/org/tokens", data=request)
 
     def update_schema(self, request: UpdateSchemaRequest) -> APIResponse:
-        """Update search schema.
+        """Replace the org's search schema.
+
+        Note: this endpoint requires a signed-in user session; it is not available
+        to API-key callers and returns a 403 (`forbidden`) when called with one.
 
         Args:
             request: Update schema request

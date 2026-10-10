@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-10-10
+
+### Changed
+- **Breaking**: Authentication now uses a real per-org API key sent as `X-Api-Key`,
+  created via `POST /org/api-keys` on a signed-in session. The previous scheme
+  (sending the org ID as `X-Org-Id` with a fixed `X-User-Id: node_sdk`) no longer
+  works against the current API.
+- `update_tokens()` now accepts numeric token values (`str`, `int`, or `float`),
+  matching the API's token map type.
+- `SearchResponse` typing updated to match the current API contract (`source`,
+  `processing_time_ms`, `pattern_used`, `cached`, etc.).
+- `APIError` now carries the API's machine-readable `code` when present.
+- Documented that `update_tokens()` and `update_schema()` require a signed-in
+  user session and return `403 forbidden` for API-key callers.
+
 ## [1.0.0] - 2025-01-16
 
 ### Added
